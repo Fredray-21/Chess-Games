@@ -3,8 +3,8 @@ package chess;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
+
+import static chess.TypePiece.getTypePiece;
 
 // Modules used :
 //import chess.ChessGUI;
@@ -30,7 +30,7 @@ public class ChessDemo {
         RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         BufferedImage emptyLayer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-        // create a black background
+        // create a GREY background
         BufferedImage foreground = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         mgrLayers.addLayer(foreground);
         Graphics2D foregroundGC = (Graphics2D) foreground.getGraphics();
@@ -95,21 +95,23 @@ public class ChessDemo {
             }
         }
 
-        ArrayList<String> chessPieceWHITE = new ArrayList<String>();
+        ArrayList<Piece> piecesWhite = new ArrayList<Piece>();
         for (int i = 0; i < 8; i++) {
-            chessPieceWHITE.add(new String("pawn-white.png"));
+            piecesWhite.add(new Piece(TypePiece.PION, "pawn-white.png"));
         }
-        chessPieceWHITE.add(new String("rook-white.png"));
-        chessPieceWHITE.add(new String("knight-white.png"));
-        chessPieceWHITE.add(new String("bishop-white.png"));
-        chessPieceWHITE.add(new String("queen-white.png"));
-        chessPieceWHITE.add(new String("king-white.png"));
-        chessPieceWHITE.add(new String("bishop-white.png"));
-        chessPieceWHITE.add(new String("knight-white.png"));
-        chessPieceWHITE.add(new String("rook-white.png"));
+        piecesWhite.add(new Piece(TypePiece.TOUR, "rook-white.png"));
+        piecesWhite.add(new Piece(TypePiece.CAVALIER, "knight-white.png"));
+        piecesWhite.add(new Piece(TypePiece.FOU, "bishop-white.png"));
+        piecesWhite.add(new Piece(TypePiece.REINE, "queen-white.png"));
+        piecesWhite.add(new Piece(TypePiece.ROI, "king-white.png"));
+        piecesWhite.add(new Piece(TypePiece.FOU, "bishop-white.png"));
+        piecesWhite.add(new Piece(TypePiece.CAVALIER, "knight-white.png"));
+        piecesWhite.add(new Piece(TypePiece.TOUR, "rook-white.png"));
 
-        ArrayList<BufferedImage> chessPieceLayerWHITE = new ArrayList<BufferedImage>();
-        ArrayList<BufferedImage> chessPieceImageWHITE = new ArrayList<BufferedImage>();
+
+        for (Piece unePiece : piecesWhite) {
+            System.out.println("URL Pièce : " + unePiece.getPieceImage() + " | Pièce Type : " + getTypePiece(unePiece.getType()));
+        }
 
         // add all piece WHITE in the chess board in all squares
         x_piece = 30;
@@ -121,8 +123,6 @@ public class ChessDemo {
             }
             BufferedImage chessPieceLayer = chessGraphicTool.createImage(chessPieceImage,
                     width, height, x_piece, y_piece);
-            chessPieceLayerWHITE.add(chessPieceLayer);
-            chessPieceImageWHITE.add(chessPieceImage);
             mgrLayers.addLayer(chessPieceLayer);
             x_piece += 100;
             if (x_piece >= 800) {
@@ -147,10 +147,9 @@ public class ChessDemo {
             if (chessMouseEvent.drag() == true) {
                 int x = chessMouseEvent.getX();
                 int y = chessMouseEvent.getY();
-                System.out.println("Position x="+x+" y="+y);
+                System.out.println("Position x=" + x + " y=" + y);
 
             }
-
         }
     }
 }
