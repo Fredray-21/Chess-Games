@@ -59,6 +59,9 @@ public class ChessDemo {
             }
         }
 
+
+
+
         ArrayList<Piece> piecesBlack = new ArrayList<Piece>();
         piecesBlack.add(new Piece(TypePiece.TOUR, "rook-black.png"));
         piecesBlack.add(new Piece(TypePiece.CAVALIER, "knight-black.png"));
@@ -144,10 +147,19 @@ public class ChessDemo {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (chessMouseEvent.drag() == true) {
+            if (chessMouseEvent.click() == true) {
                 int x = chessMouseEvent.getX();
                 int y = chessMouseEvent.getY();
                 System.out.println("Position x=" + x + " y=" + y);
+
+                // get the square chessBoardGC where the mouse is and change background color
+                int x_square = x / 100;
+                int y_square = y / 100;
+                System.out.println("Position x_square=" + x_square + " y_square=" + y_square);
+                chessBoardGC.setColor(Color.RED);
+                chessBoardGC.fill3DRect(x_square * 100, y_square * 100, 100, 100, true);
+                mgrLayers.repaint();
+
 
             }
         }

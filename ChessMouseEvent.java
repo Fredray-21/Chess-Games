@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 public class ChessMouseEvent implements MouseListener, MouseMotionListener {
 
 	private boolean drag = false;
+	private  boolean click = false;
 	private int x = 0;
 	private int y = 0;
 
@@ -18,13 +19,18 @@ public class ChessMouseEvent implements MouseListener, MouseMotionListener {
 
 	}
 
+	// TODO: error position of the mouse car le get x et y prend en compte les bordures
+	// 1. essaye de faire un get x et y qui prend en compte les bordures
+	// 2. essaye de retirer les bordures
+	// 3. J'ai mit pas defaut un getX/Y qui prend en compte les bordures (-7, -30)
+
 	/**
 	 * Get the last x location of the mouse pointer
 	 * 
 	 * @return
 	 */
 	public int getX() {
-		return this.x;
+		return this.x-7;
 	}
 
 	/**
@@ -33,7 +39,7 @@ public class ChessMouseEvent implements MouseListener, MouseMotionListener {
 	 * @return
 	 */
 	public int getY() {
-		return this.y;
+		return this.y-30;
 	}
 
 	/**
@@ -47,6 +53,12 @@ public class ChessMouseEvent implements MouseListener, MouseMotionListener {
 		return status;
 	}
 
+	public  boolean click() {
+		boolean status = click;
+		this.click = false;
+		return status;
+	}
+
 	// ============================ Listener implementation
 	// =========================
 
@@ -57,6 +69,7 @@ public class ChessMouseEvent implements MouseListener, MouseMotionListener {
 	 * @param[in] mouse event
 	 */
 	public void mouseClicked(MouseEvent mouse) {
+		this.click = true;
 	}
 
 	/**
@@ -98,6 +111,9 @@ public class ChessMouseEvent implements MouseListener, MouseMotionListener {
 	 * @param[in] mouse event
 	 */
 	public void mousePressed(MouseEvent mouse) {
+		x = mouse.getX();
+		y = mouse.getY();
+		click = true;
 	}
 
 	/**
