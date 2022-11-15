@@ -59,49 +59,30 @@ public class ChessDemo {
             }
         }
 
-        // create a builder layer for the chess piece
-        int xorigin = 510; // size of piece ~ 40 -> 500+(60-40)/2
-        int yorigin = 210; // size of the piece ~ 40 -> 200+(60-40)/2
-
-        // create a layer with the image file
-        BufferedImage blackPawnImage = ChessGraphicTool.load(imagePath + "pawn-black.png");
-        if (blackPawnImage == null) {
-            System.out.println("Error image not found : " + imagePath + "pawn-black.png");
-        }
-        // create a dedicated layer and copy the new pawn image at the right coordinates
-        xorigin = 510;
-        yorigin = 330;
-        BufferedImage blackPawnLayer = chessGraphicTool.createImage(blackPawnImage,
-                width, height, xorigin, yorigin);
-
-        // add the new layers
-        mgrLayers.addLayer(blackPawnLayer);
-
-        // The list of the images :
-        // king-black.png knight-white.png queen-black.png rook-white.png
-        // bishop-black.png king-white.png pawn-black.png queen-white.png
-        // bishop-white.png knight-black.png pawn-white.png rook-black.png
-
-        HashMap<String, Integer> piecesBlacks = new HashMap<>();
-        piecesBlacks.put(new String("rook-black.png"), TypePiece.TOUR);
-        piecesBlacks.put(new String("knight-black.png"), TypePiece.CAVALIER);
-        piecesBlacks.put(new String("bishop-black.png"), TypePiece.FOU);
-        piecesBlacks.put(new String("queen-black.png"), TypePiece.REINE);
-        piecesBlacks.put(new String("king-black.png"), TypePiece.ROI);
-        piecesBlacks.put(new String("bishop-black.png"), TypePiece.FOU);
-        piecesBlacks.put(new String("knight-black.png"), TypePiece.CAVALIER);
-        piecesBlacks.put(new String("rook-black.png"), TypePiece.TOUR);
+        ArrayList<Piece> piecesBlack = new ArrayList<Piece>();
+        piecesBlack.add(new Piece(TypePiece.TOUR, "rook-black.png"));
+        piecesBlack.add(new Piece(TypePiece.CAVALIER, "knight-black.png"));
+        piecesBlack.add(new Piece(TypePiece.FOU, "bishop-black.png"));
+        piecesBlack.add(new Piece(TypePiece.REINE, "queen-black.png"));
+        piecesBlack.add(new Piece(TypePiece.ROI, "king-black.png"));
+        piecesBlack.add(new Piece(TypePiece.FOU, "bishop-black.png"));
+        piecesBlack.add(new Piece(TypePiece.CAVALIER, "knight-black.png"));
+        piecesBlack.add(new Piece(TypePiece.TOUR, "rook-black.png"));
         for (int i = 0; i < 8; i++) {
-            piecesBlacks.put(new String("pawn-black.png"), TypePiece.PION);
+            piecesBlack.add(new Piece(TypePiece.PION, "pawn-black.png"));
+        }
+
+        for (Piece unePiece : piecesBlack) {
+            System.out.println("URL Pièce : " + unePiece.getPieceImage() + " | Pièce Type : " + getTypePiece(unePiece.getType()));
         }
 
         // add all piece BLACK in the chess board in all squares
         int x_piece = 30;
         int y_piece = 30;
-        for (int i = 0; i < piecesBlacks.size(); i++) {
-            BufferedImage chessPieceImage = ChessGraphicTool.load(imagePath + piecesBlacks.keySet().toArray()[i]);
+        for (int i = 0; i < piecesBlack.size(); i++) {
+            BufferedImage chessPieceImage = ChessGraphicTool.load(imagePath + piecesBlack.get(i).getPieceImage());
             if (chessPieceImage == null) {
-                System.out.println("Error image not found : " + imagePath + piecesBlacks.keySet().toArray()[i]);
+                System.out.println("Error image not found : " + imagePath + piecesBlack.get(i).getPieceImage());
             }
             BufferedImage chessPieceLayer = chessGraphicTool.createImage(chessPieceImage,
                     width, height, x_piece, y_piece);
@@ -133,10 +114,10 @@ public class ChessDemo {
         // add all piece WHITE in the chess board in all squares
         x_piece = 30;
         y_piece = 630;
-        for (int i = 0; i < chessPieceWHITE.size(); i++) {
-            BufferedImage chessPieceImage = ChessGraphicTool.load(imagePath + chessPieceWHITE.get(i));
+        for (int i = 0; i < piecesWhite.size(); i++) {
+            BufferedImage chessPieceImage = ChessGraphicTool.load(imagePath + piecesWhite.get(i).getPieceImage());
             if (chessPieceImage == null) {
-                System.out.println("Error image not found : " + imagePath + chessPieceWHITE.get(i));
+                System.out.println("Error image not found : " + imagePath + piecesWhite.get(i).getPieceImage());
             }
             BufferedImage chessPieceLayer = chessGraphicTool.createImage(chessPieceImage,
                     width, height, x_piece, y_piece);
@@ -154,6 +135,7 @@ public class ChessDemo {
 
 
         // -- main loop waiting drag and drop user events
+
         int counter = 0;
         while (true) {
             // waiting in millisecond
