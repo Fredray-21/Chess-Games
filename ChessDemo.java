@@ -1,10 +1,10 @@
 package chess;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 // Modules used :
 //import chess.ChessGUI;
@@ -82,26 +82,26 @@ public class ChessDemo {
         // bishop-black.png king-white.png pawn-black.png queen-white.png
         // bishop-white.png knight-black.png pawn-white.png rook-black.png
 
-        ArrayList<String> chessPieceBLACK = new ArrayList<String>();
-        chessPieceBLACK.add(new String("rook-black.png"));
-        chessPieceBLACK.add(new String("knight-black.png"));
-        chessPieceBLACK.add(new String("bishop-black.png"));
-        chessPieceBLACK.add(new String("queen-black.png"));
-        chessPieceBLACK.add(new String("king-black.png"));
-        chessPieceBLACK.add(new String("bishop-black.png"));
-        chessPieceBLACK.add(new String("knight-black.png"));
-        chessPieceBLACK.add(new String("rook-black.png"));
+        HashMap<String, Integer> piecesBlacks = new HashMap<>();
+        piecesBlacks.put(new String("rook-black.png"), TypePiece.TOUR);
+        piecesBlacks.put(new String("knight-black.png"), TypePiece.CAVALIER);
+        piecesBlacks.put(new String("bishop-black.png"), TypePiece.FOU);
+        piecesBlacks.put(new String("queen-black.png"), TypePiece.REINE);
+        piecesBlacks.put(new String("king-black.png"), TypePiece.ROI);
+        piecesBlacks.put(new String("bishop-black.png"), TypePiece.FOU);
+        piecesBlacks.put(new String("knight-black.png"), TypePiece.CAVALIER);
+        piecesBlacks.put(new String("rook-black.png"), TypePiece.TOUR);
         for (int i = 0; i < 8; i++) {
-            chessPieceBLACK.add(new String("pawn-black.png"));
+            piecesBlacks.put(new String("pawn-black.png"), TypePiece.PION);
         }
 
         // add all piece BLACK in the chess board in all squares
         int x_piece = 30;
         int y_piece = 30;
-        for (int i = 0; i < chessPieceBLACK.size(); i++) {
-            BufferedImage chessPieceImage = ChessGraphicTool.load(imagePath + chessPieceBLACK.get(i));
+        for (int i = 0; i < piecesBlacks.size(); i++) {
+            BufferedImage chessPieceImage = ChessGraphicTool.load(imagePath + piecesBlacks.keySet().toArray()[i]);
             if (chessPieceImage == null) {
-                System.out.println("Error image not found : " + imagePath + chessPieceBLACK.get(i));
+                System.out.println("Error image not found : " + imagePath + piecesBlacks.keySet().toArray()[i]);
             }
             BufferedImage chessPieceLayer = chessGraphicTool.createImage(chessPieceImage,
                     width, height, x_piece, y_piece);
