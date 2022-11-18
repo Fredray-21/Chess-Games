@@ -138,8 +138,22 @@ public class ChessDemo {
                                         // 1. si oui afficher le mouvement en vert
                                         // 2. Si non, car il y a une piece qui bloque le mouvement ne pas afficher le mouvement
 
-                                        chessBoardGC.setColor(Color.GREEN);
-                                        chessBoardGC.fill3DRect((mouvement[0] + x_currentSquare) * 100, (mouvement[1] + y_currentSquare) * 100, 100, 100, true);
+
+                                        // regarder les pieces au tour de la piece selectionnee pour voir si il y a une piece qui bloque le mouvement
+                                        boolean mouvementPossible = true;
+                                        for (Piece piece : Pieces) {
+                                            if (piece.getPosition()[0] == mouvement[0] + x_currentSquare && piece.getPosition()[1] == mouvement[1] + y_currentSquare) {
+                                                mouvementPossible = false;
+                                            }
+                                        }
+
+                                        if (!mouvementPossible) {
+                                            chessBoardGC.setColor(Color.RED);
+                                            chessBoardGC.fill3DRect((mouvement[0] + x_currentSquare) * 100, (mouvement[1] + y_currentSquare) * 100, 100, 100, true);
+                                        } else {
+                                            chessBoardGC.setColor(Color.GREEN);
+                                            chessBoardGC.fill3DRect((mouvement[0] + x_currentSquare) * 100, (mouvement[1] + y_currentSquare) * 100, 100, 100, true);
+                                        }
                                     }
 
 
