@@ -4,8 +4,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import static chess.TypePiece.getTypePiece;
-
 // Modules used :
 //import chess.ChessGUI;
 //import chess.ChessMouseEvent;
@@ -21,14 +19,12 @@ public class ChessDemo {
         int height = 800;
         LayerManagement mgrLayers = new LayerManagement();
         mgrLayers.setPreferredSize(new Dimension(width, height));
-        ChessGraphicTool chessGraphicTool = new ChessGraphicTool();
-        String imagePath = new String("images/");
+        String imagePath = "images/";
 
         ChessGUI.showOnFrame(mgrLayers, "Chess game");
         ChessGUI.setResizable(false);
         ChessMouseEvent chessMouseEvent = ChessGUI.getChessMouseEvent();
         RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        BufferedImage emptyLayer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
         // create a GREY background
         BufferedImage foreground = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -60,86 +56,45 @@ public class ChessDemo {
         }
 
 
-
-
-        ArrayList<Piece> piecesBlack = new ArrayList<Piece>();
-        piecesBlack.add(new Piece(TypePiece.TOUR, "rook-black.png"));
-        piecesBlack.add(new Piece(TypePiece.CAVALIER, "knight-black.png"));
-        piecesBlack.add(new Piece(TypePiece.FOU, "bishop-black.png"));
-        piecesBlack.add(new Piece(TypePiece.REINE, "queen-black.png"));
-        piecesBlack.add(new Piece(TypePiece.ROI, "king-black.png"));
-        piecesBlack.add(new Piece(TypePiece.FOU, "bishop-black.png"));
-        piecesBlack.add(new Piece(TypePiece.CAVALIER, "knight-black.png"));
-        piecesBlack.add(new Piece(TypePiece.TOUR, "rook-black.png"));
+        ArrayList<Piece> Pieces = new ArrayList<>();
+        Pieces.add(new Piece(TypePiece.TOUR, "rook-black.png", new int[]{0, 0}));
+        Pieces.add(new Piece(TypePiece.CAVALIER, "knight-black.png", new int[]{1, 0}));
+        Pieces.add(new Piece(TypePiece.FOU, "bishop-black.png", new int[]{2, 0}));
+        Pieces.add(new Piece(TypePiece.REINE, "queen-black.png", new int[]{3, 0}));
+        Pieces.add(new Piece(TypePiece.ROI, "king-black.png", new int[]{4, 0}));
+        Pieces.add(new Piece(TypePiece.FOU, "bishop-black.png", new int[]{5, 0}));
+        Pieces.add(new Piece(TypePiece.CAVALIER, "knight-black.png", new int[]{6, 0}));
+        Pieces.add(new Piece(TypePiece.TOUR, "rook-black.png", new int[]{7, 0}));
         for (int i = 0; i < 8; i++) {
-            piecesBlack.add(new Piece(TypePiece.PION, "pawn-black.png"));
+            Pieces.add(new Piece(TypePiece.PION, "pawn-black.png", new int[]{i, 1}));
         }
+        Pieces.add(new Piece(TypePiece.TOUR, "rook-white.png", new int[]{0, 7}));
+        Pieces.add(new Piece(TypePiece.CAVALIER, "knight-white.png", new int[]{1, 7}));
+        Pieces.add(new Piece(TypePiece.FOU, "bishop-white.png", new int[]{2, 7}));
+        Pieces.add(new Piece(TypePiece.REINE, "queen-white.png", new int[]{3, 7}));
+        Pieces.add(new Piece(TypePiece.ROI, "king-white.png", new int[]{4, 7}));
+        Pieces.add(new Piece(TypePiece.FOU, "bishop-white.png", new int[]{5, 7}));
 
-        for (Piece unePiece : piecesBlack) {
-            System.out.println("URL Pièce : " + unePiece.getPieceImage() + " | Pièce Type : " + getTypePiece(unePiece.getType()));
-        }
-
-        // add all piece BLACK in the chess board in all squares
-        int x_piece = 30;
-        int y_piece = 30;
-        for (int i = 0; i < piecesBlack.size(); i++) {
-            BufferedImage chessPieceImage = ChessGraphicTool.load(imagePath + piecesBlack.get(i).getPieceImage());
-            if (chessPieceImage == null) {
-                System.out.println("Error image not found : " + imagePath + piecesBlack.get(i).getPieceImage());
-            }
-            BufferedImage chessPieceLayer = chessGraphicTool.createImage(chessPieceImage,
-                    width, height, x_piece, y_piece);
-            // ici possible set data
-            mgrLayers.addLayer(chessPieceLayer);
-            x_piece += 100;
-            if (x_piece >= 800) {
-                x_piece = 30;
-                y_piece += 100;
-            }
-        }
-
-        ArrayList<Piece> piecesWhite = new ArrayList<Piece>();
+        Pieces.add(new Piece(TypePiece.CAVALIER, "knight-white.png", new int[]{6, 7}));
+        Pieces.add(new Piece(TypePiece.TOUR, "rook-white.png", new int[]{7, 7}));
         for (int i = 0; i < 8; i++) {
-            piecesWhite.add(new Piece(TypePiece.PION, "pawn-white.png"));
-        }
-        piecesWhite.add(new Piece(TypePiece.TOUR, "rook-white.png"));
-        piecesWhite.add(new Piece(TypePiece.CAVALIER, "knight-white.png"));
-        piecesWhite.add(new Piece(TypePiece.FOU, "bishop-white.png"));
-        piecesWhite.add(new Piece(TypePiece.REINE, "queen-white.png"));
-        piecesWhite.add(new Piece(TypePiece.ROI, "king-white.png"));
-        piecesWhite.add(new Piece(TypePiece.FOU, "bishop-white.png"));
-        piecesWhite.add(new Piece(TypePiece.CAVALIER, "knight-white.png"));
-        piecesWhite.add(new Piece(TypePiece.TOUR, "rook-white.png"));
-
-
-        for (Piece unePiece : piecesWhite) {
-            System.out.println("URL Pièce : " + unePiece.getPieceImage() + " | Pièce Type : " + getTypePiece(unePiece.getType()));
+            Pieces.add(new Piece(TypePiece.PION, "pawn-white.png", new int[]{i, 6}));
         }
 
-        // add all piece WHITE in the chess board in all squares
-        x_piece = 30;
-        y_piece = 630;
-        for (int i = 0; i < piecesWhite.size(); i++) {
-            BufferedImage chessPieceImage = ChessGraphicTool.load(imagePath + piecesWhite.get(i).getPieceImage());
-            if (chessPieceImage == null) {
-                System.out.println("Error image not found : " + imagePath + piecesWhite.get(i).getPieceImage());
-            }
-            BufferedImage chessPieceLayer = chessGraphicTool.createImage(chessPieceImage,
-                    width, height, x_piece, y_piece);
-            mgrLayers.addLayer(chessPieceLayer);
-            x_piece += 100;
-            if (x_piece >= 800) {
-                x_piece = 30;
-                y_piece += 100;
-            }
+        // add all piece in the chess board in a square with position (x,y)
+        for (Piece unePiece : Pieces) {
+            BufferedImage piece = ChessGraphicTool.load(imagePath + unePiece.getPieceImage());
+            chessBoardGC.drawImage(piece, unePiece.getPosition()[0] * 100 + 30, unePiece.getPosition()[1] * 100 + 30, 40, 40, null);
         }
+
         // display all the layers
         mgrLayers.repaint();
 
 
         // -- main loop waiting drag and drop user events
 
-        int counter = 0;
+        int[] oldPosition = null;
+        ArrayList<int[]> oldMouvement = null;
         while (true) {
             // waiting in millisecond
             try {
@@ -147,20 +102,75 @@ public class ChessDemo {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (chessMouseEvent.click() == true) {
+            if (chessMouseEvent.click()) {
                 int x = chessMouseEvent.getX();
                 int y = chessMouseEvent.getY();
-                System.out.println("Position x=" + x + " y=" + y);
+                int x_currentSquare = x / 100;
+                int y_currentSquare = y / 100;
 
-                // get the square chessBoardGC where the mouse is and change background color
-                int x_square = x / 100;
-                int y_square = y / 100;
-                System.out.println("Position x_square=" + x_square + " y_square=" + y_square);
-                chessBoardGC.setColor(Color.RED);
-                chessBoardGC.fill3DRect(x_square * 100, y_square * 100, 100, 100, true);
-                mgrLayers.repaint();
+                // si l'user ne re click pas sur la meme piece
+                if (oldPosition == null || oldPosition[0] != x_currentSquare || oldPosition[1] != y_currentSquare) {
+                    if (x < 800 && y < 800) { // chess board
+                        // find if the piece is in the square clicked
+                        for (Piece unePiece : Pieces) {
+                            if (unePiece.getPosition()[0] == x_currentSquare && unePiece.getPosition()[1] == y_currentSquare && unePiece.getPieceColor().equals("white")) {
+
+                                // default color for the square where old position was before the click and oldMouvement was before the click
+                                if (oldMouvement != null && oldPosition != null) {
+                                    for (int[] mouvement : oldMouvement) {
+                                        if (mouvement[0] + oldPosition[0] < 8 && mouvement[1] + oldPosition[1] < 8) {
+                                            if ((mouvement[0] + oldPosition[0] + mouvement[1] + oldPosition[1]) % 2 == 0) {
+                                                chessBoardGC.setColor(Color.WHITE);
+                                            } else {
+                                                chessBoardGC.setColor(Color.BLACK);
+                                            }
+                                            chessBoardGC.fill3DRect((mouvement[0] + oldPosition[0]) * 100, (mouvement[1] + oldPosition[1]) * 100, 100, 100, true);
+                                        }
+                                    }
+                                    mgrLayers.repaint();
+                                }
+
+                                ArrayList<int[]> mouvements = MouvementsPieces.getMouvements(unePiece);
+                                for (int[] mouvement : mouvements) {
+                                    if (mouvement[0] + x_currentSquare < 8 && mouvement[1] + y_currentSquare < 8) {
+
+                                        // TODO : regarder si le mouvement est possible (collision avec une autre piece)
+                                        // 1. si oui afficher le mouvement en vert
+                                        // 2. Si non, car il y a une piece qui bloque le mouvement ne pas afficher le mouvement
+
+                                        chessBoardGC.setColor(Color.GREEN);
+                                        chessBoardGC.fill3DRect((mouvement[0] + x_currentSquare) * 100, (mouvement[1] + y_currentSquare) * 100, 100, 100, true);
+                                    }
 
 
+                                    // get the piece image and draw it in the square with position (x,y)
+                                    for (Piece PieceMovement : Pieces) {
+                                        if (PieceMovement.getPosition()[0] == mouvement[0] + x_currentSquare && PieceMovement.getPosition()[1] == mouvement[1] + y_currentSquare) {
+                                            BufferedImage piece = ChessGraphicTool.load(imagePath + PieceMovement.getPieceImage());
+                                            chessBoardGC.drawImage(piece, PieceMovement.getPosition()[0] * 100 + 30, PieceMovement.getPosition()[1] * 100 + 30, 40, 40, null);
+                                        }
+                                    }
+                                }
+
+                                // re draw the older piece in the square old position
+                                if (oldMouvement != null) {
+                                    for (int[] mouvement : oldMouvement) {
+                                        for (Piece unePiece2 : Pieces) {
+                                            if (unePiece2.getPosition()[0] == mouvement[0] + oldPosition[0] && unePiece2.getPosition()[1] == mouvement[1] + oldPosition[1]) {
+                                                BufferedImage piece2 = ChessGraphicTool.load(imagePath + unePiece2.getPieceImage());
+                                                chessBoardGC.drawImage(piece2, (mouvement[0] + oldPosition[0]) * 100 + 30, (mouvement[1] + oldPosition[1]) * 100 + 30, 40, 40, null);
+                                            }
+                                        }
+                                    }
+                                }
+                                mgrLayers.repaint();
+                                oldPosition = new int[]{x_currentSquare, y_currentSquare};
+                                oldMouvement = mouvements;
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         }
     }

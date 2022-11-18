@@ -10,7 +10,7 @@ public class TypePiece {
     public static final int ROI = 5;
 
 
-    public static String getTypePiece(int type){
+    public static String getTypePiece(int type) {
         switch (type) {
             case 0 -> {
                 return "PION";
@@ -35,5 +35,4 @@ public class TypePiece {
             }
         }
     }
-
 }

@@ -1,6 +1,7 @@
 package chess;
 
 //import java.awt.Graphics;
+
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
@@ -11,20 +12,11 @@ public class LayerManagement extends JPanel {
     ArrayList<BufferedImage> layers;
 
     public LayerManagement() {
-        layers = new ArrayList<BufferedImage>();
+        layers = new ArrayList<>();
     }
 
     public void addLayer(BufferedImage layer) {
         layers.add(layer);
-    }
-
-    public void removeLayer(BufferedImage layer) {
-        for (java.awt.image.BufferedImage buf : layers) {
-            if (buf == layer) {
-                System.out.println("REMOVED");
-                layers.remove(layer);
-            }
-        }
     }
 
     @Override
@@ -35,6 +27,4 @@ public class LayerManagement extends JPanel {
             g.drawImage(buf, 0, 0, buf.getWidth(), buf.getHeight(), null);
         }
     }
-
-
 }
