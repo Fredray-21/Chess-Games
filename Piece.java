@@ -7,6 +7,9 @@ public class Piece extends TypePiece{
 
     public String pieceImage;
 
+    public Piece() {
+    }
+
     public Piece(int type, String pieceImage, int[] position) {
         this.type = type;
         this.pieceImage = pieceImage;

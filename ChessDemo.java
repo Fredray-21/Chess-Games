@@ -17,6 +17,7 @@ public class ChessDemo {
     public static String colorYellow = "#f7f769";
     public static String colorRed = "#ec7d6a";
     public static String colorGreen = "#769656";
+
     public static void main(String[] args) {
 
         // Initialization
@@ -102,6 +103,10 @@ public class ChessDemo {
 
         int[] oldPosition = null;
         ArrayList<int[]> oldMouvement = null;
+        boolean isPieceCliked = false;
+        ArrayList<int[]> mouvementsJaune = new ArrayList<>();
+        Piece pieceClikedForMouvement = new Piece();
+
         while (true) {
             // waiting in millisecond
             try {
@@ -109,11 +114,84 @@ public class ChessDemo {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (chessMouseEvent.click()) {
+
+            if (isPieceCliked) {
+                if (chessMouseEvent.click()) {
+                    int x = chessMouseEvent.getX();
+                    int y = chessMouseEvent.getY();
+                    int x_currentSquare = x / 100;
+                    int y_currentSquare = y / 100;
+                    int[] newPosition = null;
+
+                    for (int[] mouvement : mouvementsJaune) {
+
+                        if (mouvement[0] + pieceClikedForMouvement.getPosition()[0] == x_currentSquare && mouvement[1] + pieceClikedForMouvement.getPosition()[1] == y_currentSquare) {
+
+                            if ((pieceClikedForMouvement.getPosition()[0] + pieceClikedForMouvement.getPosition()[1]) % 2 == 0) {
+                                chessBoardGC.setColor(Color.WHITE);
+                            } else {
+                                chessBoardGC.setColor(Color.decode(colorGreen));
+                            }
+                            chessBoardGC.fill3DRect(pieceClikedForMouvement.getPosition()[0] * 100, pieceClikedForMouvement.getPosition()[1] * 100, 100, 100, true);
+
+
+                            newPosition = new int[]{mouvement[0] + pieceClikedForMouvement.getPosition()[0], mouvement[1] + pieceClikedForMouvement.getPosition()[1]};
+                            pieceClikedForMouvement.setPosition(newPosition);
+
+                            BufferedImage piece = ChessGraphicTool.load(imagePath + pieceClikedForMouvement.getPieceImage());
+                            chessBoardGC.drawImage(piece, pieceClikedForMouvement.getPosition()[0] * 100 + piecePosition, pieceClikedForMouvement.getPosition()[1] * 100 + piecePosition, pieceSize, pieceSize, null);
+
+                        }
+
+                    }
+
+                    System.out.println(mouvementsJaune.size() > 0);
+                    System.out.println(chessMouseEvent.click());
+                    System.out.println(newPosition == null);
+                    System.out.println(isPieceCliked == false);
+
+
+                    if (mouvementsJaune.size() > 0  && newPosition == null) {
+                        isPieceCliked = true;
+                    } else {
+                    chessBoardGC.setColor(Color.WHITE);
+                    for (int i = 0; i < 8; i++) {
+                        for (int j = 0; j < 8; j++) {
+                            if ((i + j) % 2 == 0) {
+                                chessBoardGC.fill3DRect(i * 100, j * 100, 100, 100, true);
+                            }
+                        }
+                    }
+                    chessBoardGC.setColor(Color.decode(colorGreen));
+                    for (int i = 0; i < 8; i++) {
+                        for (int j = 0; j < 8; j++) {
+                            if ((i + j) % 2 != 0) {
+                                chessBoardGC.fill3DRect(i * 100, j * 100, 100, 100, true);
+                            }
+                        }
+                    }
+
+                    for (Piece unePiece : Pieces) {
+                        BufferedImage piece = ChessGraphicTool.load(imagePath + unePiece.getPieceImage());
+                        chessBoardGC.drawImage(piece, unePiece.getPosition()[0] * 100 + piecePosition, unePiece.getPosition()[1] * 100 + piecePosition, pieceSize, pieceSize, null);
+                    }
+                        isPieceCliked = false;
+                        mouvementsJaune.clear();
+                        pieceClikedForMouvement = new Piece();
+                    }
+                }
+
+                System.out.println("isPieceCliked:" + isPieceCliked);
+                mgrLayers.repaint();
+            }
+
+
+            if (chessMouseEvent.click() && isPieceCliked == false) {
                 int x = chessMouseEvent.getX();
                 int y = chessMouseEvent.getY();
                 int x_currentSquare = x / 100;
                 int y_currentSquare = y / 100;
+
 
                 // si l'user ne re click pas sur la meme piece
                 if (oldPosition == null || oldPosition[0] != x_currentSquare || oldPosition[1] != y_currentSquare) {
@@ -121,6 +199,9 @@ public class ChessDemo {
                         // find if the piece is in the square clicked
                         for (Piece unePiece : Pieces) {
                             if (unePiece.getPosition()[0] == x_currentSquare && unePiece.getPosition()[1] == y_currentSquare && unePiece.getPieceColor().equals("white")) {
+
+                                isPieceCliked = true;
+                                pieceClikedForMouvement = unePiece;
 
                                 // default color for the square where old position was before the click and oldMouvement was before the click
                                 if (oldMouvement != null && oldPosition != null) {
@@ -145,7 +226,6 @@ public class ChessDemo {
                                         // 1. si oui afficher le mouvement en vert
                                         // 2. Si non, car il y a une piece qui bloque le mouvement ne pas afficher le mouvement
 
-
                                         // regarder les pieces au tour de la piece selectionnee pour voir si il y a une piece qui bloque le mouvement
                                         boolean mouvementPossible = true;
                                         for (Piece piece : Pieces) {
@@ -159,13 +239,14 @@ public class ChessDemo {
                                             chessBoardGC.setColor(Color.decode(colorRed));
                                             chessBoardGC.fill3DRect((mouvement[0] + x_currentSquare) * 100, (mouvement[1] + y_currentSquare) * 100, 100, 100, true);
                                         } else {
+                                            mouvementsJaune.add(mouvement);
                                             chessBoardGC.setColor(Color.decode(colorYellow));
                                             chessBoardGC.fill3DRect((mouvement[0] + x_currentSquare) * 100, (mouvement[1] + y_currentSquare) * 100, 100, 100, true);
                                         }
                                     }
 
 
-                                    // get the piece image and draw it in the square with position (x,y)
+                                    // get the piece the image and draw it in square with position (x,y)
                                     for (Piece PieceMovement : Pieces) {
                                         if (PieceMovement.getPosition()[0] == mouvement[0] + x_currentSquare && PieceMovement.getPosition()[1] == mouvement[1] + y_currentSquare) {
                                             BufferedImage piece = ChessGraphicTool.load(imagePath + PieceMovement.getPieceImage());
@@ -188,12 +269,12 @@ public class ChessDemo {
                                 mgrLayers.repaint();
                                 oldPosition = new int[]{x_currentSquare, y_currentSquare};
                                 oldMouvement = mouvements;
-                                break;
                             }
                         }
                     }
                 }
             }
+
         }
     }
 }
