@@ -12,11 +12,14 @@ import java.util.ArrayList;
 
 public class ChessDemo {
 
+    public static int pieceSize = 60;
+    public static int piecePosition = (100 - pieceSize) / 2;
     public static void main(String[] args) {
 
         // Initialization
         int width = 1200;
         int height = 800;
+
         LayerManagement mgrLayers = new LayerManagement();
         mgrLayers.setPreferredSize(new Dimension(width, height));
         String imagePath = "images/";
@@ -84,7 +87,7 @@ public class ChessDemo {
         // add all piece in the chess board in a square with position (x,y)
         for (Piece unePiece : Pieces) {
             BufferedImage piece = ChessGraphicTool.load(imagePath + unePiece.getPieceImage());
-            chessBoardGC.drawImage(piece, unePiece.getPosition()[0] * 100 + 30, unePiece.getPosition()[1] * 100 + 30, 40, 40, null);
+            chessBoardGC.drawImage(piece, unePiece.getPosition()[0] * 100 + piecePosition, unePiece.getPosition()[1] * 100 + piecePosition, pieceSize, pieceSize, null);
         }
 
         // display all the layers
@@ -161,7 +164,7 @@ public class ChessDemo {
                                     for (Piece PieceMovement : Pieces) {
                                         if (PieceMovement.getPosition()[0] == mouvement[0] + x_currentSquare && PieceMovement.getPosition()[1] == mouvement[1] + y_currentSquare) {
                                             BufferedImage piece = ChessGraphicTool.load(imagePath + PieceMovement.getPieceImage());
-                                            chessBoardGC.drawImage(piece, PieceMovement.getPosition()[0] * 100 + 30, PieceMovement.getPosition()[1] * 100 + 30, 40, 40, null);
+                                            chessBoardGC.drawImage(piece, PieceMovement.getPosition()[0] * 100 + piecePosition, PieceMovement.getPosition()[1] * 100 + piecePosition, pieceSize, pieceSize, null);
                                         }
                                     }
                                 }
@@ -172,7 +175,7 @@ public class ChessDemo {
                                         for (Piece unePiece2 : Pieces) {
                                             if (unePiece2.getPosition()[0] == mouvement[0] + oldPosition[0] && unePiece2.getPosition()[1] == mouvement[1] + oldPosition[1]) {
                                                 BufferedImage piece2 = ChessGraphicTool.load(imagePath + unePiece2.getPieceImage());
-                                                chessBoardGC.drawImage(piece2, (mouvement[0] + oldPosition[0]) * 100 + 30, (mouvement[1] + oldPosition[1]) * 100 + 30, 40, 40, null);
+                                                chessBoardGC.drawImage(piece2, (mouvement[0] + oldPosition[0]) * 100 + piecePosition, (mouvement[1] + oldPosition[1]) * 100 + piecePosition, pieceSize, pieceSize, null);
                                             }
                                         }
                                     }
