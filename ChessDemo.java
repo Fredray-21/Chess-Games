@@ -14,6 +14,9 @@ public class ChessDemo {
 
     public static int pieceSize = 60;
     public static int piecePosition = (100 - pieceSize) / 2;
+    public static String colorYellow = "#f7f769";
+    public static String colorRed = "#ec7d6a";
+    public static String colorGreen = "#769656";
     public static void main(String[] args) {
 
         // Initialization
@@ -24,7 +27,8 @@ public class ChessDemo {
         mgrLayers.setPreferredSize(new Dimension(width, height));
         String imagePath = "images/";
 
-        ChessGUI.showOnFrame(mgrLayers, "Chess game");
+        ChessGUI.showOnFrame(mgrLayers, "CHESS GAME - Echec & Math.. ématique ?? hihi");
+        ChessGUI.setIconPath("images/icon_chess.jpg");
         ChessGUI.setResizable(false);
         ChessMouseEvent chessMouseEvent = ChessGUI.getChessMouseEvent();
         RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -49,7 +53,7 @@ public class ChessDemo {
                 }
             }
         }
-        chessBoardGC.setColor(Color.decode("#769656"));
+        chessBoardGC.setColor(Color.decode(colorGreen));
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if ((i + j) % 2 != 0) {
@@ -125,7 +129,7 @@ public class ChessDemo {
                                             if ((mouvement[0] + oldPosition[0] + mouvement[1] + oldPosition[1]) % 2 == 0) {
                                                 chessBoardGC.setColor(Color.WHITE);
                                             } else {
-                                                chessBoardGC.setColor(Color.decode("#769656"));
+                                                chessBoardGC.setColor(Color.decode(colorGreen));
                                             }
                                             chessBoardGC.fill3DRect((mouvement[0] + oldPosition[0]) * 100, (mouvement[1] + oldPosition[1]) * 100, 100, 100, true);
                                         }
@@ -150,11 +154,12 @@ public class ChessDemo {
                                             }
                                         }
 
+
                                         if (!mouvementPossible) {
-                                            chessBoardGC.setColor(Color.decode("#ec7d6a"));
+                                            chessBoardGC.setColor(Color.decode(colorRed));
                                             chessBoardGC.fill3DRect((mouvement[0] + x_currentSquare) * 100, (mouvement[1] + y_currentSquare) * 100, 100, 100, true);
                                         } else {
-                                            chessBoardGC.setColor(Color.decode("#f7f769"));
+                                            chessBoardGC.setColor(Color.decode(colorYellow));
                                             chessBoardGC.fill3DRect((mouvement[0] + x_currentSquare) * 100, (mouvement[1] + y_currentSquare) * 100, 100, 100, true);
                                         }
                                     }

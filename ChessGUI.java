@@ -1,11 +1,10 @@
 package chess;
 
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.JComponent;
-import javax.swing.JFrame;
+import javax.swing.*;
 
 public class ChessGUI {
 
@@ -32,6 +31,10 @@ public class ChessGUI {
 		frame.getContentPane().add(component);
 		frame.pack();
 		frame.setVisible(true);
+	}
+
+	public static void setIconPath(String s) {
+		frame.setIconImage(new ImageIcon(s).getImage());
 	}
 
 	/**
