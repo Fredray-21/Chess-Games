@@ -49,7 +49,7 @@ public class ChessDemo {
                 }
             }
         }
-        chessBoardGC.setColor(Color.BLACK);
+        chessBoardGC.setColor(Color.decode("#769656"));
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if ((i + j) % 2 != 0) {
@@ -125,7 +125,7 @@ public class ChessDemo {
                                             if ((mouvement[0] + oldPosition[0] + mouvement[1] + oldPosition[1]) % 2 == 0) {
                                                 chessBoardGC.setColor(Color.WHITE);
                                             } else {
-                                                chessBoardGC.setColor(Color.BLACK);
+                                                chessBoardGC.setColor(Color.decode("#769656"));
                                             }
                                             chessBoardGC.fill3DRect((mouvement[0] + oldPosition[0]) * 100, (mouvement[1] + oldPosition[1]) * 100, 100, 100, true);
                                         }
@@ -151,10 +151,10 @@ public class ChessDemo {
                                         }
 
                                         if (!mouvementPossible) {
-                                            chessBoardGC.setColor(Color.RED);
+                                            chessBoardGC.setColor(Color.decode("#ec7d6a"));
                                             chessBoardGC.fill3DRect((mouvement[0] + x_currentSquare) * 100, (mouvement[1] + y_currentSquare) * 100, 100, 100, true);
                                         } else {
-                                            chessBoardGC.setColor(Color.GREEN);
+                                            chessBoardGC.setColor(Color.decode("#f7f769"));
                                             chessBoardGC.fill3DRect((mouvement[0] + x_currentSquare) * 100, (mouvement[1] + y_currentSquare) * 100, 100, 100, true);
                                         }
                                     }
