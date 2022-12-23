@@ -142,7 +142,6 @@ public class ChessDemo {
                             chessBoardGC.drawImage(piece, pieceClikedForMouvement.getPosition()[0] * 100 + piecePosition, pieceClikedForMouvement.getPosition()[1] * 100 + piecePosition, pieceSize, pieceSize, null);
 
                         }
-
                     }
 
                     System.out.println(mouvementsJaune.size() > 0);
@@ -151,30 +150,30 @@ public class ChessDemo {
                     System.out.println(isPieceCliked == false);
 
 
-                    if (mouvementsJaune.size() > 0  && newPosition == null) {
+                    if (mouvementsJaune.size() > 0 && newPosition == null) {
                         isPieceCliked = true;
                     } else {
-                    chessBoardGC.setColor(Color.WHITE);
-                    for (int i = 0; i < 8; i++) {
-                        for (int j = 0; j < 8; j++) {
-                            if ((i + j) % 2 == 0) {
-                                chessBoardGC.fill3DRect(i * 100, j * 100, 100, 100, true);
+                        chessBoardGC.setColor(Color.WHITE);
+                        for (int i = 0; i < 8; i++) {
+                            for (int j = 0; j < 8; j++) {
+                                if ((i + j) % 2 == 0) {
+                                    chessBoardGC.fill3DRect(i * 100, j * 100, 100, 100, true);
+                                }
                             }
                         }
-                    }
-                    chessBoardGC.setColor(Color.decode(colorGreen));
-                    for (int i = 0; i < 8; i++) {
-                        for (int j = 0; j < 8; j++) {
-                            if ((i + j) % 2 != 0) {
-                                chessBoardGC.fill3DRect(i * 100, j * 100, 100, 100, true);
+                        chessBoardGC.setColor(Color.decode(colorGreen));
+                        for (int i = 0; i < 8; i++) {
+                            for (int j = 0; j < 8; j++) {
+                                if ((i + j) % 2 != 0) {
+                                    chessBoardGC.fill3DRect(i * 100, j * 100, 100, 100, true);
+                                }
                             }
                         }
-                    }
 
-                    for (Piece unePiece : Pieces) {
-                        BufferedImage piece = ChessGraphicTool.load(imagePath + unePiece.getPieceImage());
-                        chessBoardGC.drawImage(piece, unePiece.getPosition()[0] * 100 + piecePosition, unePiece.getPosition()[1] * 100 + piecePosition, pieceSize, pieceSize, null);
-                    }
+                        for (Piece unePiece : Pieces) {
+                            BufferedImage piece = ChessGraphicTool.load(imagePath + unePiece.getPieceImage());
+                            chessBoardGC.drawImage(piece, unePiece.getPosition()[0] * 100 + piecePosition, unePiece.getPosition()[1] * 100 + piecePosition, pieceSize, pieceSize, null);
+                        }
                         isPieceCliked = false;
                         mouvementsJaune.clear();
                         pieceClikedForMouvement = new Piece();
@@ -194,55 +193,73 @@ public class ChessDemo {
 
 
                 // si l'user ne re click pas sur la meme piece
-                if (oldPosition == null || oldPosition[0] != x_currentSquare || oldPosition[1] != y_currentSquare) {
-                    if (x < 800 && y < 800) { // chess board
-                        // find if the piece is in the square clicked
-                        for (Piece unePiece : Pieces) {
-                            if (unePiece.getPosition()[0] == x_currentSquare && unePiece.getPosition()[1] == y_currentSquare && unePiece.getPieceColor().equals("white")) {
+                // if (oldPosition == null || oldPosition[0] != x_currentSquare || oldPosition[1] != y_currentSquare) {
+                if (x < 800 && y < 800) { // chess board
+                    // find if the piece is in the square clicked
+                    for (Piece unePiece : Pieces) {
+                        if (unePiece.getPosition()[0] == x_currentSquare && unePiece.getPosition()[1] == y_currentSquare && unePiece.getPieceColor().equals("white")) {
+                            isPieceCliked = true;
+                            pieceClikedForMouvement = unePiece;
 
-                                isPieceCliked = true;
-                                pieceClikedForMouvement = unePiece;
+                            // default color for the square where old position was before the click and oldMouvement was before the click
+                            if (oldMouvement != null && oldPosition != null) {
+                                for (int[] mouvement : oldMouvement) {
+                                    if (mouvement[0] + oldPosition[0] < 8 && mouvement[1] + oldPosition[1] < 8) {
+                                        if ((mouvement[0] + oldPosition[0] + mouvement[1] + oldPosition[1]) % 2 == 0) {
+                                            chessBoardGC.setColor(Color.WHITE);
+                                        } else {
+                                            chessBoardGC.setColor(Color.decode(colorGreen));
+                                        }
+                                        chessBoardGC.fill3DRect((mouvement[0] + oldPosition[0]) * 100, (mouvement[1] + oldPosition[1]) * 100, 100, 100, true);
+                                    }
+                                }
+                                mgrLayers.repaint();
+                            }
 
-                                // default color for the square where old position was before the click and oldMouvement was before the click
-                                if (oldMouvement != null && oldPosition != null) {
-                                    for (int[] mouvement : oldMouvement) {
-                                        if (mouvement[0] + oldPosition[0] < 8 && mouvement[1] + oldPosition[1] < 8) {
-                                            if ((mouvement[0] + oldPosition[0] + mouvement[1] + oldPosition[1]) % 2 == 0) {
-                                                chessBoardGC.setColor(Color.WHITE);
-                                            } else {
-                                                chessBoardGC.setColor(Color.decode(colorGreen));
+                            ArrayList<int[]> mouvements = MouvementsPieces.getMouvements(unePiece);
+                            for (int[] mouvement : mouvements) {
+                                int x_mouvement = mouvement[0] + x_currentSquare;
+                                int y_mouvement = mouvement[1] + y_currentSquare;
+
+                                int x_delta = mouvement[0];
+                                int y_delta = mouvement[1];
+
+                                // Check if the movement is within the 8x8 board
+                                if (x_mouvement < 8 && y_mouvement < 8) {
+                                    // Check if the path to the destination square is blocked by any pieces
+                                    boolean pathBlocked = false;
+                                    for (int i = 1; i < Math.max(Math.abs(x_delta), Math.abs(y_delta)); i++) {
+                                        int x_intermediate = x_currentSquare + i * Integer.signum(x_delta);
+                                        int y_intermediate = y_currentSquare + i * Integer.signum(y_delta);
+                                        for (Piece piece : Pieces) {
+                                            if (piece.getPosition()[0] == x_intermediate && piece.getPosition()[1] == y_intermediate) {
+                                                pathBlocked = true;
+                                                break;
                                             }
-                                            chessBoardGC.fill3DRect((mouvement[0] + oldPosition[0]) * 100, (mouvement[1] + oldPosition[1]) * 100, 100, 100, true);
+                                        }
+                                        if (pathBlocked) {
+                                            break;
                                         }
                                     }
-                                    mgrLayers.repaint();
-                                }
 
-                                ArrayList<int[]> mouvements = MouvementsPieces.getMouvements(unePiece);
-                                for (int[] mouvement : mouvements) {
-                                    if (mouvement[0] + x_currentSquare < 8 && mouvement[1] + y_currentSquare < 8) {
-
-                                        // TODO : regarder si le mouvement est possible (collision avec une autre piece)
-                                        // 1. si oui afficher le mouvement en vert
-                                        // 2. Si non, car il y a une piece qui bloque le mouvement ne pas afficher le mouvement
-
-                                        // regarder les pieces au tour de la piece selectionnee pour voir si il y a une piece qui bloque le mouvement
-                                        boolean mouvementPossible = true;
-                                        for (Piece piece : Pieces) {
-                                            if (piece.getPosition()[0] == mouvement[0] + x_currentSquare && piece.getPosition()[1] == mouvement[1] + y_currentSquare) {
-                                                mouvementPossible = false;
+                                    // Check if the destination square is occupied by a piece that is aligned with the current square
+                                    boolean destinationOccupied = false;
+                                    for (Piece piece : Pieces) {
+                                        if (piece.getPosition()[0] == x_mouvement && piece.getPosition()[1] == y_mouvement) {
+                                            if (x_delta == 0 || y_delta == 0 || Math.abs(x_delta) == Math.abs(y_delta)) {
+                                                destinationOccupied = true;
+                                                break;
                                             }
                                         }
+                                    }
 
-
-                                        if (!mouvementPossible) {
-                                            chessBoardGC.setColor(Color.decode(colorRed));
-                                            chessBoardGC.fill3DRect((mouvement[0] + x_currentSquare) * 100, (mouvement[1] + y_currentSquare) * 100, 100, 100, true);
-                                        } else {
-                                            mouvementsJaune.add(mouvement);
-                                            chessBoardGC.setColor(Color.decode(colorYellow));
-                                            chessBoardGC.fill3DRect((mouvement[0] + x_currentSquare) * 100, (mouvement[1] + y_currentSquare) * 100, 100, 100, true);
-                                        }
+                                    if (pathBlocked || destinationOccupied) {
+                                        chessBoardGC.setColor(Color.decode(colorRed));
+                                        chessBoardGC.fill3DRect(x_mouvement * 100, y_mouvement * 100, 100, 100, true);
+                                    } else {
+                                        mouvementsJaune.add(mouvement);
+                                        chessBoardGC.setColor(Color.decode(colorYellow));
+                                        chessBoardGC.fill3DRect(x_mouvement * 100, y_mouvement * 100, 100, 100, true);
                                     }
 
 
@@ -255,26 +272,28 @@ public class ChessDemo {
                                     }
                                 }
 
-                                // re draw the older piece in the square old position
-                                if (oldMouvement != null) {
-                                    for (int[] mouvement : oldMouvement) {
-                                        for (Piece unePiece2 : Pieces) {
-                                            if (unePiece2.getPosition()[0] == mouvement[0] + oldPosition[0] && unePiece2.getPosition()[1] == mouvement[1] + oldPosition[1]) {
-                                                BufferedImage piece2 = ChessGraphicTool.load(imagePath + unePiece2.getPieceImage());
-                                                chessBoardGC.drawImage(piece2, (mouvement[0] + oldPosition[0]) * 100 + piecePosition, (mouvement[1] + oldPosition[1]) * 100 + piecePosition, pieceSize, pieceSize, null);
-                                            }
+                            }
+
+
+                            // re draw the older piece in the square old position
+                            if (oldMouvement != null) {
+                                for (int[] mouvement : oldMouvement) {
+                                    for (Piece unePiece2 : Pieces) {
+                                        if (unePiece2.getPosition()[0] == mouvement[0] + oldPosition[0] && unePiece2.getPosition()[1] == mouvement[1] + oldPosition[1]) {
+                                            BufferedImage piece2 = ChessGraphicTool.load(imagePath + unePiece2.getPieceImage());
+                                            chessBoardGC.drawImage(piece2, (mouvement[0] + oldPosition[0]) * 100 + piecePosition, (mouvement[1] + oldPosition[1]) * 100 + piecePosition, pieceSize, pieceSize, null);
                                         }
                                     }
                                 }
-                                mgrLayers.repaint();
-                                oldPosition = new int[]{x_currentSquare, y_currentSquare};
-                                oldMouvement = mouvements;
                             }
+                            mgrLayers.repaint();
+                            oldPosition = new int[]{x_currentSquare, y_currentSquare};
+                            oldMouvement = mouvements;
                         }
                     }
                 }
+                //}
             }
-
         }
     }
 }
