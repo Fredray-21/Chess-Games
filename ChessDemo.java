@@ -176,7 +176,6 @@ public class ChessDemo {
 
                             ArrayList<int[]> mouvements = new ArrayList<>();
                             if (!pieceJustMoved) {
-                                mouvementsJaune.clear();
                                 mouvements = MouvementsPieces.getMouvements(unePiece);
 
                                 for (int[] mouvement : mouvements) {
@@ -204,26 +203,38 @@ public class ChessDemo {
                                             }
                                         }
 
-                                        // Check if the destination square is occupied by a piece that is aligned with the current square
+                                        // Check if the destination square is occupied by a piece
                                         boolean destinationOccupied = false;
                                         for (Piece piece : Pieces) {
                                             if (piece.getPosition()[0] == x_mouvement && piece.getPosition()[1] == y_mouvement) {
-                                                if (x_delta == 0 || y_delta == 0 || Math.abs(x_delta) == Math.abs(y_delta)) {
-                                                    destinationOccupied = true;
-                                                    break;
-                                                }
+                                                destinationOccupied = true;
+                                                break;
                                             }
                                         }
 
 
-                                        if (pathBlocked || destinationOccupied) {
-                                            chessBoardGC.setColor(Color.decode(colorRed));
-                                            chessBoardGC.fill3DRect(x_mouvement * 100, y_mouvement * 100, 100, 100, true);
-                                        } else {
+                                        // Prod :
+                                        if (!pathBlocked && !destinationOccupied) {
                                             mouvementsJaune.add(mouvement);
                                             chessBoardGC.setColor(Color.decode(colorYellow));
                                             chessBoardGC.fill3DRect(x_mouvement * 100, y_mouvement * 100, 100, 100, true);
+                                        } else if(destinationOccupied && !pathBlocked) {
+                                            chessBoardGC.setColor(Color.decode(colorRed));
+                                            chessBoardGC.fill3DRect(x_mouvement * 100, y_mouvement * 100, 100, 100, true);
                                         }
+
+
+//                                        if (pathBlocked) {
+//                                            chessBoardGC.setColor(Color.decode(colorRed));
+//                                            chessBoardGC.fill3DRect(x_mouvement * 100, y_mouvement * 100, 100, 100, true);
+//                                        } else if(destinationOccupied) {
+//                                            chessBoardGC.setColor(Color.BLUE);
+//                                            chessBoardGC.fill3DRect(x_mouvement * 100, y_mouvement * 100, 100, 100, true);
+//                                        } else {
+//                                            mouvementsJaune.add(mouvement);
+//                                            chessBoardGC.setColor(Color.decode(colorYellow));
+//                                            chessBoardGC.fill3DRect(x_mouvement * 100, y_mouvement * 100, 100, 100, true);
+//                                        }
 
 
                                         // get the piece the image and draw it in square with position (x,y)
