@@ -177,8 +177,20 @@ public class ChessDemo {
                             ArrayList<int[]> mouvements = new ArrayList<>();
                             if (!pieceJustMoved) {
                                 mouvements = MouvementsPieces.getMouvements(unePiece);
-                                if (unePiece.getType() == TypePiece.PION && y_currentSquare == 6) { // si le pion est en position départ il peut avancer de 2 cases
-                                    mouvements.add(new int[]{0, -2});
+                                if (unePiece.getType() == TypePiece.PION) { // si le pion est en position départ il peut avancer de 2 cases
+                                    if(y_currentSquare == 6){
+                                        mouvements.add(new int[]{0, -2});
+                                    }
+
+                                    // si le pion peut manger une piece adverse
+                                    for (Piece piece : Pieces) {
+                                        if (piece.getPosition()[0] == x_currentSquare + 1 && piece.getPosition()[1] == y_currentSquare - 1 && !piece.getPieceColor().equals("white")) {
+                                            mouvements.add(new int[]{1, -1});
+                                        }
+                                        if (piece.getPosition()[0] == x_currentSquare - 1 && piece.getPosition()[1] == y_currentSquare - 1 && !piece.getPieceColor().equals("white")) {
+                                            mouvements.add(new int[]{-1, -1});
+                                        }
+                                    }
                                 }
 
                                 for (int[] mouvement : mouvements) {
