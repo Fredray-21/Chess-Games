@@ -177,6 +177,9 @@ public class ChessDemo {
                             ArrayList<int[]> mouvements = new ArrayList<>();
                             if (!pieceJustMoved) {
                                 mouvements = MouvementsPieces.getMouvements(unePiece);
+                                if (unePiece.getType() == TypePiece.PION && y_currentSquare == 6) { // si le pion est en position départ il peut avancer de 2 cases
+                                    mouvements.add(new int[]{0, -2});
+                                }
 
                                 for (int[] mouvement : mouvements) {
                                     int x_mouvement = mouvement[0] + x_currentSquare;
@@ -187,21 +190,27 @@ public class ChessDemo {
 
                                     // Check if the movement is within the 8x8 board
                                     if (x_mouvement < 8 && y_mouvement < 8) {
+
+
                                         // Check if the path to the destination square is blocked by any pieces
                                         boolean pathBlocked = false;
-                                        for (int i = 1; i < Math.max(Math.abs(x_delta), Math.abs(y_delta)); i++) {
-                                            int x_intermediate = x_currentSquare + i * Integer.signum(x_delta);
-                                            int y_intermediate = y_currentSquare + i * Integer.signum(y_delta);
-                                            for (Piece piece : Pieces) {
-                                                if (piece.getPosition()[0] == x_intermediate && piece.getPosition()[1] == y_intermediate) {
-                                                    pathBlocked = true;
+                                        // check if the current piece is a cavalier
+                                        if (unePiece.getType() != TypePiece.CAVALIER) {
+                                            for (int i = 1; i < Math.max(Math.abs(x_delta), Math.abs(y_delta)); i++) {
+                                                int x_intermediate = x_currentSquare + i * Integer.signum(x_delta);
+                                                int y_intermediate = y_currentSquare + i * Integer.signum(y_delta);
+                                                for (Piece piece : Pieces) {
+                                                    if (piece.getPosition()[0] == x_intermediate && piece.getPosition()[1] == y_intermediate) {
+                                                        pathBlocked = true;
+                                                        break;
+                                                    }
+                                                }
+                                                if (pathBlocked) {
                                                     break;
                                                 }
                                             }
-                                            if (pathBlocked) {
-                                                break;
-                                            }
                                         }
+
 
                                         // Check if the destination square is occupied by a piece
                                         boolean destinationOccupied = false;
@@ -212,18 +221,16 @@ public class ChessDemo {
                                             }
                                         }
 
-
-                                        // Prod :
                                         if (!pathBlocked && !destinationOccupied) {
                                             mouvementsJaune.add(mouvement);
                                             chessBoardGC.setColor(Color.decode(colorYellow));
                                             chessBoardGC.fill3DRect(x_mouvement * 100, y_mouvement * 100, 100, 100, true);
-                                        } else if(destinationOccupied && !pathBlocked) {
+                                        } else if (destinationOccupied && !pathBlocked) {
                                             chessBoardGC.setColor(Color.decode(colorRed));
                                             chessBoardGC.fill3DRect(x_mouvement * 100, y_mouvement * 100, 100, 100, true);
                                         }
 
-
+//                                        dev :
 //                                        if (pathBlocked) {
 //                                            chessBoardGC.setColor(Color.decode(colorRed));
 //                                            chessBoardGC.fill3DRect(x_mouvement * 100, y_mouvement * 100, 100, 100, true);

@@ -9,7 +9,6 @@ public class MouvementsPieces {
         switch (piece.getType()) {
             case 0 -> {
                 mouvements.add(new int[]{0, -1});
-                mouvements.add(new int[]{0, -2});
             }
             case 1 -> {
                 for (int i = 1; i <= 8; i++) {
