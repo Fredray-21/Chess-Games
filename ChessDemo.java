@@ -18,6 +18,8 @@ public class ChessDemo {
     public static String colorRed = "#ec7d6a";
     public static String colorGreen = "#769656";
 
+    public static Boolean isWhite = true;
+
     public static void main(String[] args) {
 
         // Initialization
@@ -89,6 +91,7 @@ public class ChessDemo {
             Pieces.add(new Piece(TypePiece.PION, "pawn-white.png", new int[]{i, 6}));
         }
 
+
         // add all piece in the chess board in a square with position (x,y)
         for (Piece unePiece : Pieces) {
             BufferedImage piece = ChessGraphicTool.load(imagePath + unePiece.getPieceImage());
@@ -101,12 +104,17 @@ public class ChessDemo {
 
         // -- main loop waiting drag and drop user events
 
-        int[] oldPosition = null;
-        ArrayList<int[]> oldMouvement = null;
-        ArrayList<int[]> mouvementsJaune = new ArrayList<>();
-        Piece currentPiece = new Piece();
-        ArrayList<int[]> ListPositionMove = new ArrayList<>();
-        boolean pieceJustMoved = false;
+        int[] oldPosition = null; // anciene position de la piece
+        ArrayList<int[]> oldMouvement = null; // ancien mouvement de la piece
+        ArrayList<int[]> mouvementsJaune = new ArrayList<>(); // mouvement possible de la piece
+        ArrayList<int[]> mouvementsRouge = new ArrayList<>(); // mouvement possible eat de la piece
+        Piece currentPiece = new Piece(); // piece selectionné
+        ArrayList<int[]> ListPositionMoveJaunes = new ArrayList<>(); // liste des positions possibles en jaune
+        ArrayList<int[]> ListPositionMoveRouges = new ArrayList<>(); // liste des positions possibles en rouge
+        boolean pieceJustMoved = false; // si la piece vient d'etre bougé
+
+        int[] positionPieceWhiteEat = new int[]{8,0}; // position de la prochaine piece blanche mangé
+        int[] positionPieceBlackEat = new int[]{8,7}; // position de la prochaine piece noir mangé
 
         while (true) {
             // waiting in millisecond
@@ -122,19 +130,23 @@ public class ChessDemo {
                 int x_currentSquare = x / 100;
                 int y_currentSquare = y / 100;
 
-                // if user click on a mouvement square
-                ListPositionMove.clear();
-                for (int[] mouvementJ : mouvementsJaune) {
-                    int[] move = new int[]{mouvementJ[0] + oldPosition[0], mouvementJ[1] + oldPosition[1]};
-                    ListPositionMove.add(move);
+                // si la piece vient d'etre bougé
+                ListPositionMoveJaunes.clear(); // on vide la liste des positions possible
+                ListPositionMoveRouges.clear(); // on vide la liste des positions possible
+                for (int[] mouvementJ : mouvementsJaune) { // on parcours les mouvements possibles Jaune
+                    int[] move = new int[]{mouvementJ[0] + oldPosition[0], mouvementJ[1] + oldPosition[1]}; // on transforme les mouvements jaunes en position possible
+                    ListPositionMoveJaunes.add(move);
                 }
 
-                for (int[] move : ListPositionMove) {
+                for (int[] mouvementR : mouvementsRouge) {
+                    int[] move = new int[]{mouvementR[0] + oldPosition[0], mouvementR[1] + oldPosition[1]}; // on transforme les mouvements rouges en position possible
+                    ListPositionMoveRouges.add(move);
+                }
+
+                for (int[] move : ListPositionMoveJaunes) {
                     if (move[0] == x_currentSquare && move[1] == y_currentSquare) { // if user click on a mouvement square
                         // move the piece
                         currentPiece.setPosition(new int[]{x_currentSquare, y_currentSquare});
-                        BufferedImage piece = ChessGraphicTool.load(imagePath + currentPiece.getPieceImage());
-                        chessBoardGC.drawImage(piece, currentPiece.getPosition()[0] * 100 + piecePosition, currentPiece.getPosition()[1] * 100 + piecePosition, pieceSize, pieceSize, null);
 
                         // remove the old piece
                         if ((oldPosition[0] + oldPosition[1]) % 2 == 0) {
@@ -149,13 +161,57 @@ public class ChessDemo {
                 }
 
 
+                for (int[] move : ListPositionMoveRouges) { // si on a cliqué sur une case rouge
+                    if (move[0] == x_currentSquare && move[1] == y_currentSquare) { // if user click on a mouvement square
+                        // get the piece to remove
+                        for (Piece unePiece : Pieces) {
+                            if (unePiece.getPosition()[0] == x_currentSquare && unePiece.getPosition()[1] == y_currentSquare) {
+                                if(unePiece.getPieceColor().equals("black")){
+                                    unePiece.setPosition(new int[]{positionPieceBlackEat[0], positionPieceBlackEat[1]}); // set the position of the piece to remove out of the board
+                                    if(positionPieceBlackEat[0] == 11){ // si on est sur la premiere ligne
+                                        positionPieceBlackEat[0] = 8; // on remet la position a 8
+                                        positionPieceBlackEat[1] = positionPieceBlackEat[1] - 1; // on passe a la ligne précédente
+                                    }else{
+                                        positionPieceBlackEat[0] = positionPieceBlackEat[0] + 1; // on passe a la colonne suivante
+                                    }
+                                } else {
+                                    unePiece.setPosition(new int[]{positionPieceWhiteEat[0], positionPieceWhiteEat[1]}); // set the position of the piece to remove out of the board
+                                    if(positionPieceWhiteEat[0] == 11){ // si on est sur la premiere ligne
+                                        positionPieceWhiteEat[0] = 8; // on remet la position a 8
+                                        positionPieceWhiteEat[1] = positionPieceWhiteEat[1] + 1; // on passe a la ligne suivante
+                                    }else{
+                                        positionPieceWhiteEat[0] = positionPieceWhiteEat[0] + 1; // on passe a la colonne suivante
+                                    }
+                                }
+
+                                BufferedImage piece = ChessGraphicTool.load(imagePath + unePiece.getPieceImage());
+                                chessBoardGC.drawImage(piece, unePiece.getPosition()[0] * 100 + piecePosition, unePiece.getPosition()[1] * 100 + piecePosition, pieceSize, pieceSize, null);
+                                break;
+                            }
+                        }
+
+                        // move the piece
+                        currentPiece.setPosition(new int[]{x_currentSquare, y_currentSquare});
+
+                        // remove the old piece
+                        if ((oldPosition[0] + oldPosition[1]) % 2 == 0) {
+                            chessBoardGC.setColor(Color.WHITE);
+                        } else {
+                            chessBoardGC.setColor(Color.decode(colorGreen));
+                        }
+                        chessBoardGC.fill3DRect(oldPosition[0] * 100, oldPosition[1] * 100, 100, 100, true);
+                        pieceJustMoved = true; // set flag to indicate that a piece has just been moved
+                        break;
+                    }
+                }
+
                 // si l'user ne re click pas sur la meme piece
-//                if (oldPosition == null || oldPosition[0] != x_currentSquare || oldPosition[1] != y_currentSquare) {
                 if (x < 800 && y < 800) { // chess board
                     // find if the piece is in the square clicked
                     for (Piece unePiece : Pieces) {
                         if (unePiece.getPosition()[0] == x_currentSquare && unePiece.getPosition()[1] == y_currentSquare && unePiece.getPieceColor().equals("white")) {
                             mouvementsJaune.clear();
+                            mouvementsRouge.clear();
                             currentPiece = unePiece;
 
                             // default color for the square where old position was before the click and oldMouvement was before the click
@@ -178,7 +234,7 @@ public class ChessDemo {
                             if (!pieceJustMoved) {
                                 mouvements = MouvementsPieces.getMouvements(unePiece);
                                 if (unePiece.getType() == TypePiece.PION) { // si le pion est en position départ il peut avancer de 2 cases
-                                    if(y_currentSquare == 6){
+                                    if (y_currentSquare == 6) {
                                         mouvements.add(new int[]{0, -2});
                                     }
 
@@ -196,14 +252,11 @@ public class ChessDemo {
                                 for (int[] mouvement : mouvements) {
                                     int x_mouvement = mouvement[0] + x_currentSquare;
                                     int y_mouvement = mouvement[1] + y_currentSquare;
-
                                     int x_delta = mouvement[0];
                                     int y_delta = mouvement[1];
 
                                     // Check if the movement is within the 8x8 board
                                     if (x_mouvement < 8 && y_mouvement < 8) {
-
-
                                         // Check if the path to the destination square is blocked by any pieces
                                         boolean pathBlocked = false;
                                         // check if the current piece is a cavalier
@@ -223,7 +276,6 @@ public class ChessDemo {
                                             }
                                         }
 
-
                                         // Check if the destination square is occupied by a piece
                                         boolean destinationOccupied = false;
                                         for (Piece piece : Pieces) {
@@ -238,24 +290,36 @@ public class ChessDemo {
                                             chessBoardGC.setColor(Color.decode(colorYellow));
                                             chessBoardGC.fill3DRect(x_mouvement * 100, y_mouvement * 100, 100, 100, true);
                                         } else if (destinationOccupied && !pathBlocked) {
-                                            chessBoardGC.setColor(Color.decode(colorRed));
-                                            chessBoardGC.fill3DRect(x_mouvement * 100, y_mouvement * 100, 100, 100, true);
+
+                                            // Check if the destination square is occupied by a piece of the same color
+                                            boolean destinationOccupiedBySameColor = false;
+                                            for (Piece piece : Pieces) {
+                                                if (piece.getPosition()[0] == x_mouvement && piece.getPosition()[1] == y_mouvement && piece.getPieceColor().equals("white")) {
+                                                    destinationOccupiedBySameColor = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (!destinationOccupiedBySameColor) {
+                                                mouvementsRouge.add(mouvement);
+                                                chessBoardGC.setColor(Color.decode(colorRed));
+                                                chessBoardGC.fill3DRect(x_mouvement * 100, y_mouvement * 100, 100, 100, true);
+                                            }
+
+                                            // if the piece is a pion, he must not eat in front of him
+                                            if (unePiece.getType() == TypePiece.PION) {
+                                                if (mouvement[0] == 0) {
+                                                    mouvementsRouge.remove(mouvement);
+                                                    // white square or green square
+                                                    if ((x_mouvement + y_mouvement) % 2 == 0) {
+                                                        chessBoardGC.setColor(Color.WHITE);
+                                                    } else {
+                                                        chessBoardGC.setColor(Color.decode(colorGreen));
+                                                    }
+                                                    chessBoardGC.fill3DRect(x_mouvement * 100, y_mouvement * 100, 100, 100, true);
+                                                }
+                                            }
+
                                         }
-
-//                                        dev :
-//                                        if (pathBlocked) {
-//                                            chessBoardGC.setColor(Color.decode(colorRed));
-//                                            chessBoardGC.fill3DRect(x_mouvement * 100, y_mouvement * 100, 100, 100, true);
-//                                        } else if(destinationOccupied) {
-//                                            chessBoardGC.setColor(Color.BLUE);
-//                                            chessBoardGC.fill3DRect(x_mouvement * 100, y_mouvement * 100, 100, 100, true);
-//                                        } else {
-//                                            mouvementsJaune.add(mouvement);
-//                                            chessBoardGC.setColor(Color.decode(colorYellow));
-//                                            chessBoardGC.fill3DRect(x_mouvement * 100, y_mouvement * 100, 100, 100, true);
-//                                        }
-
-
                                         // get the piece the image and draw it in square with position (x,y)
                                         for (Piece PieceMovement : Pieces) {
                                             if (PieceMovement.getPosition()[0] == mouvement[0] + x_currentSquare && PieceMovement.getPosition()[1] == mouvement[1] + y_currentSquare) {
@@ -266,7 +330,6 @@ public class ChessDemo {
                                     }
                                 }
                             }
-
 
                             // re draw the older piece in the square old position
                             if (oldMouvement != null) {
@@ -287,7 +350,6 @@ public class ChessDemo {
                         }
                     }
                 }
-//                }
             }
         }
     }
