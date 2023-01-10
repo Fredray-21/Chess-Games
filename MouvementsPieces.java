@@ -7,9 +7,7 @@ public class MouvementsPieces {
     public static ArrayList<int[]> getMouvements(Piece piece) {
         ArrayList<int[]> mouvements = new ArrayList<>(); // Liste des mouvements possibles
         switch (piece.getType()) {
-            case 0 -> {
-                mouvements.add(new int[]{0, -1});
-            }
+
             case 1 -> {
                 for (int i = 1; i <= 8; i++) {
                     mouvements.add(new int[]{i, 0});

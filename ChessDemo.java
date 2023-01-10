@@ -1,5 +1,6 @@
 package chess;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -112,9 +113,10 @@ public class ChessDemo {
         ArrayList<int[]> ListPositionMoveJaunes = new ArrayList<>(); // liste des positions possibles en jaune
         ArrayList<int[]> ListPositionMoveRouges = new ArrayList<>(); // liste des positions possibles en rouge
         boolean pieceJustMoved = false; // si la piece vient d'etre bougé
-
-        int[] positionPieceWhiteEat = new int[]{8,0}; // position de la prochaine piece blanche mangé
-        int[] positionPieceBlackEat = new int[]{8,7}; // position de la prochaine piece noir mangé
+        int viesNoir = 3;
+        int viesBlanc = 3;
+        int[] positionPieceWhiteEat = new int[]{8, 0}; // position de la prochaine piece blanche mangé
+        int[] positionPieceBlackEat = new int[]{8, 7}; // position de la prochaine piece noir mangé
 
         while (true) {
             // waiting in millisecond
@@ -166,20 +168,20 @@ public class ChessDemo {
                         // get the piece to remove
                         for (Piece unePiece : Pieces) {
                             if (unePiece.getPosition()[0] == x_currentSquare && unePiece.getPosition()[1] == y_currentSquare) {
-                                if(unePiece.getPieceColor().equals("black")){
+                                if (unePiece.getPieceColor().equals("black")) {
                                     unePiece.setPosition(new int[]{positionPieceBlackEat[0], positionPieceBlackEat[1]}); // set the position of the piece to remove out of the board
-                                    if(positionPieceBlackEat[0] == 11){ // si on est sur la premiere ligne
+                                    if (positionPieceBlackEat[0] == 11) { // si on est sur la premiere ligne
                                         positionPieceBlackEat[0] = 8; // on remet la position a 8
                                         positionPieceBlackEat[1] = positionPieceBlackEat[1] - 1; // on passe a la ligne précédente
-                                    }else{
+                                    } else {
                                         positionPieceBlackEat[0] = positionPieceBlackEat[0] + 1; // on passe a la colonne suivante
                                     }
                                 } else {
                                     unePiece.setPosition(new int[]{positionPieceWhiteEat[0], positionPieceWhiteEat[1]}); // set the position of the piece to remove out of the board
-                                    if(positionPieceWhiteEat[0] == 11){ // si on est sur la premiere ligne
+                                    if (positionPieceWhiteEat[0] == 11) { // si on est sur la premiere ligne
                                         positionPieceWhiteEat[0] = 8; // on remet la position a 8
                                         positionPieceWhiteEat[1] = positionPieceWhiteEat[1] + 1; // on passe a la ligne suivante
-                                    }else{
+                                    } else {
                                         positionPieceWhiteEat[0] = positionPieceWhiteEat[0] + 1; // on passe a la colonne suivante
                                     }
                                 }
@@ -200,7 +202,7 @@ public class ChessDemo {
                             chessBoardGC.setColor(Color.decode(colorGreen));
                         }
                         chessBoardGC.fill3DRect(oldPosition[0] * 100, oldPosition[1] * 100, 100, 100, true);
-                        pieceJustMoved = true; // set flag to indicate that a piece has just been moved
+                        pieceJustMoved = true; // set flag to indicate that a piece has just been moved*
                         break;
                     }
                 }
@@ -209,7 +211,7 @@ public class ChessDemo {
                 if (x < 800 && y < 800) { // chess board
                     // find if the piece is in the square clicked
                     for (Piece unePiece : Pieces) {
-                        if (unePiece.getPosition()[0] == x_currentSquare && unePiece.getPosition()[1] == y_currentSquare && unePiece.getPieceColor().equals("white")) {
+                        if (unePiece.getPosition()[0] == x_currentSquare && unePiece.getPosition()[1] == y_currentSquare && unePiece.getPieceColor().equals(isWhite ? "white" : "black")) {
                             mouvementsJaune.clear();
                             mouvementsRouge.clear();
                             currentPiece = unePiece;
@@ -233,17 +235,32 @@ public class ChessDemo {
                             ArrayList<int[]> mouvements = new ArrayList<>();
                             if (!pieceJustMoved) {
                                 mouvements = MouvementsPieces.getMouvements(unePiece);
-                                if (unePiece.getType() == TypePiece.PION) { // si le pion est en position départ il peut avancer de 2 cases
+                                if (unePiece.getType() == TypePiece.PION && unePiece.getPieceColor().equals("black")) { // si le pion est en position départ il peut avancer de 2 cases
+                                    mouvements.add(new int[]{0, 1});
+                                    if (y_currentSquare == 1) {
+                                        mouvements.add(new int[]{0, 2});
+                                    }
+                                    for (Piece piece : Pieces) {
+                                        if (piece.getPosition()[0] == x_currentSquare + 1 && piece.getPosition()[1] == y_currentSquare + 1 && piece.getPieceColor().equals("white")) {
+                                            mouvements.add(new int[]{1, 1});
+                                        }
+                                        if (piece.getPosition()[0] == x_currentSquare - 1 && piece.getPosition()[1] == y_currentSquare + 1 && piece.getPieceColor().equals("white")) {
+                                            mouvements.add(new int[]{-1, 1});
+                                        }
+                                    }
+                                }
+
+                                if (unePiece.getType() == TypePiece.PION && unePiece.getPieceColor().equals("white")) { // si le pion est en position départ il peut avancer de 2 cases
+                                    mouvements.add(new int[]{0, -1});
                                     if (y_currentSquare == 6) {
                                         mouvements.add(new int[]{0, -2});
                                     }
 
-                                    // si le pion peut manger une piece adverse
                                     for (Piece piece : Pieces) {
-                                        if (piece.getPosition()[0] == x_currentSquare + 1 && piece.getPosition()[1] == y_currentSquare - 1 && !piece.getPieceColor().equals("white")) {
+                                        if (piece.getPosition()[0] == x_currentSquare + 1 && piece.getPosition()[1] == y_currentSquare - 1 && piece.getPieceColor().equals("black")) {
                                             mouvements.add(new int[]{1, -1});
                                         }
-                                        if (piece.getPosition()[0] == x_currentSquare - 1 && piece.getPosition()[1] == y_currentSquare - 1 && !piece.getPieceColor().equals("white")) {
+                                        if (piece.getPosition()[0] == x_currentSquare - 1 && piece.getPosition()[1] == y_currentSquare - 1 && piece.getPieceColor().equals("black")) {
                                             mouvements.add(new int[]{-1, -1});
                                         }
                                     }
@@ -294,7 +311,7 @@ public class ChessDemo {
                                             // Check if the destination square is occupied by a piece of the same color
                                             boolean destinationOccupiedBySameColor = false;
                                             for (Piece piece : Pieces) {
-                                                if (piece.getPosition()[0] == x_mouvement && piece.getPosition()[1] == y_mouvement && piece.getPieceColor().equals("white")) {
+                                                if (piece.getPosition()[0] == x_mouvement && piece.getPosition()[1] == y_mouvement && piece.getPieceColor().equals(unePiece.getPieceColor())) {
                                                     destinationOccupiedBySameColor = true;
                                                     break;
                                                 }
@@ -329,6 +346,24 @@ public class ChessDemo {
                                         }
                                     }
                                 }
+                                // ici
+                            } else {
+                                isWhite = isWhite ? false : true;
+                                for (Piece piece : Pieces) {
+                                    for (int[] Position : ListPositionMoveRouges) {
+                                        if (piece.getType() == TypePiece.ROI && piece.getPosition()[0] == Position[0] && piece.getPosition()[1] == Position[1]) {
+                                            if (piece.getPieceColor().equals("white")) {
+                                                viesBlanc--;
+                                            } else {
+                                                viesNoir--;
+                                            }
+                                            if (viesNoir == 0 || viesBlanc == 0) {
+                                                endGame(piece.getPieceColor());
+                                            }
+                                        }
+                                    }
+
+                                }
                             }
 
                             // re draw the older piece in the square old position
@@ -351,6 +386,18 @@ public class ChessDemo {
                     }
                 }
             }
+        }
+    }
+
+    public static void endGame(String joueur) {
+        final JFrame parent = new JFrame();
+        parent.setVisible(true);
+        if (joueur == "black") {
+            // show message dialogue
+            JOptionPane.showMessageDialog(parent, "Les blancs ont gagné");
+        } else {
+            // show message dialogue
+            JOptionPane.showMessageDialog(parent, "Les noirs ont gagné");
         }
     }
 }
